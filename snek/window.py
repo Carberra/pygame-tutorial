@@ -17,5 +17,9 @@ class Window:
     def blit(self, sprite):
         self.surface.blit(sprite.surface, sprite.position)
 
+    def blit_ui(self, text):
+        for r in text.renders:
+            self.surface.blit(*r)
+
     def clear(self):
         self.surface.fill((0, 0, 0))
