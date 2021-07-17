@@ -1,7 +1,7 @@
 import sys
 
 import pygame as pg
-from pygame.locals import *
+import pygame.locals as pgl
 
 import snek
 
@@ -16,6 +16,18 @@ class Client:
     def run(self):
         while True:
             frame_delta = self.clock.tick() * 1e-3
+
+            events = pg.event.get()
+            if events:
+                for event in events:
+                    if event.type == pgl.QUIT:
+                        self.stop()
+
+                    if event.type == pgl.KEYDOWN:
+                        print(event.unicode)
+
+                    if event.type == pgl.MOUSEBUTTONDOWN:
+                        print(event.button)
 
             if frame_delta < 0.1:
                 self.wnd.clear()
