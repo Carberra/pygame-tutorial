@@ -11,7 +11,7 @@ class Client:
     def __init__(self):
         self.clock = pg.time.Clock()
         self.wnd = snek.Window(snek.WINDOW_WIDTH, snek.WINDOW_HEIGHT, snek.WINDOW_CAPTION)
-        self.scene = snek.MenuScene(self)
+        self.scene = snek.MainScene(self)
 
     def run(self):
         while True:

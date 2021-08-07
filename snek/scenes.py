@@ -1,4 +1,4 @@
-__all__ = ("MenuScene",)
+__all__ = ("MenuScene", "MainScene")
 
 
 import abc
@@ -75,3 +75,29 @@ class MenuScene(Scene):
         self.wnd.blit(self.background)
         for i in (self.title, *self.buttons):
             self.wnd.blit_ui(i)
+
+
+class MainScene(Scene):
+    __slots__ = Scene.__slots__ + ("background", "apple")
+
+    def __init__(self, client):
+        super().__init__(client)
+        self.background = snek.Sprite(pg.image.load("./assets/backgrounds/board.png").convert(), 0, 0)
+        self.apple = snek.AppleSprite(pg.image.load("./assets/sprites/apple.png").convert_alpha())
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pg.KEYDOWN:
+                self.apple.teleport()
+                events.remove(event)
+        return events
+
+    def update(self, delta):
+        self.timer += delta
+
+        if self.timer % 1 < 0.002:
+            self.apple.teleport()
+
+    def draw(self):
+        # self.wnd.blit(self.background)
+        self.wnd.blit(self.apple)
