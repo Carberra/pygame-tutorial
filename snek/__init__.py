@@ -6,4 +6,5 @@ from .window import Window
 from .sprites import *
 from .ui import *
 from .scenes import *
+from .snek import Snek
 from .client import Client

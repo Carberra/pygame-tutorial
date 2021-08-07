@@ -78,26 +78,26 @@ class MenuScene(Scene):
 
 
 class MainScene(Scene):
-    __slots__ = Scene.__slots__ + ("background", "apple")
+    __slots__ = Scene.__slots__ + ("background", "apple", "snek")
 
     def __init__(self, client):
         super().__init__(client)
         self.background = snek.Sprite(pg.image.load("./assets/backgrounds/board.png").convert(), 0, 0)
         self.apple = snek.AppleSprite(pg.image.load("./assets/sprites/apple.png").convert_alpha())
+        self.snek = snek.Snek(pg.image.load("./assets/sprites/snekpart.png").convert_alpha())
 
     def handle_events(self, events):
         for event in events:
             if event.type == pg.KEYDOWN:
-                self.apple.teleport()
-                events.remove(event)
+                self.snek.change_direction(event.key)
         return events
 
     def update(self, delta):
         self.timer += delta
-
-        if self.timer % 1 < 0.002:
-            self.apple.teleport()
+        self.snek.move(delta)
 
     def draw(self):
         # self.wnd.blit(self.background)
         self.wnd.blit(self.apple)
+        for part in self.snek.body:
+            self.wnd.blit(part)
