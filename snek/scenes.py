@@ -1,4 +1,11 @@
+__all__ = ("MenuScene",)
+
+
 import abc
+
+import pygame as pg
+
+import snek
 
 
 class Scene(metaclass=abc.ABCMeta):
@@ -6,7 +13,7 @@ class Scene(metaclass=abc.ABCMeta):
 
     def __init__(self, client):
         self.client = client
-        self.wnd = wnd
+        self.wnd = client.wnd
         self.frames = 0
         self.timer = 0
 
@@ -25,3 +32,46 @@ class Scene(metaclass=abc.ABCMeta):
 
     def draw(self):
         raise NotImplementedError
+
+
+class MenuScene(Scene):
+    __slots__ = Scene.__slots__ + ("background", "title", "play_button", "quit_button", "buttons")
+
+    def __init__(self, client):
+        super().__init__(client)
+        self.background = snek.Sprite(pg.image.load("./assets/backgrounds/menu.jpg").convert(), 0, 0)
+        self.title = snek.Text("+ SNEK +", snek.WINDOW_WIDTH / 2, snek.WINDOW_HEIGHT * 0.4, 100, align="center")
+        self.play_button = snek.TextButton(
+            self.client.start_game, "Play game", snek.WINDOW_WIDTH / 2,
+            snek.WINDOW_HEIGHT * 0.55, 50, align="center",
+        )
+        self.quit_button = snek.TextButton(
+            self.client.stop, "Quit", snek.WINDOW_WIDTH / 2,
+            snek.WINDOW_HEIGHT * 0.65, 50, align="center",
+        )
+        self.buttons = (self.play_button, self.quit_button)
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pg.MOUSEMOTION:
+                for button in self.buttons:
+                    if button.is_under_mouse(event.pos):
+                        button.on_hover()
+                        events.remove(event)
+                    elif button.hovering:
+                        button.on_unhover()
+                        events.remove(event)
+
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                for button in self.buttons:
+                    if button.is_under_mouse(event.pos):
+                        button.on_click()
+                        events.remove(event)
+
+    def update(self, delta):
+        pass
+
+    def draw(self):
+        self.wnd.blit(self.background)
+        for i in (self.title, *self.buttons):
+            self.wnd.blit_ui(i)
